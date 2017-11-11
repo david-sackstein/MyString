@@ -1,6 +1,7 @@
 #include "MyString.h"
 #include <stdlib.h>
 
+
 typedef struct MyString {
     char *str;
     unsigned int length;
@@ -83,7 +84,7 @@ int cmpString(const MyStringP str1, const MyStringP str2) {
     char *pt1 = str1->str;
     char *pt2 = str2->str;
 
-    while (*pt1 != 0 || *pt2 != 0) {
+    while (*pt1 != 0 && *pt2 != 0) {
         if (*pt1 > *pt2) {
             return 1;
         }
@@ -159,6 +160,8 @@ void testCreateFromString();
 
 void testCompareString();
 
+void testCyclic();
+
 void printTestResult(int passed) {
 
     printf("%s\n", passed == 1 ? "passed" : "failed");
@@ -169,8 +172,16 @@ int main() {
 //    testConcat();
 //    testDelete();
 //    testCreateFromString();
-//    testCompareString();
+    testCompareString();
 
+//    testCyclic();
+
+
+    return 0;
+}
+
+void testCyclic()
+{
     MyStringP str1 = createStringFromChars("abcdefgh");
     MyStringP str2 = createStringFromChars("abcdefgha");
     unsigned int count = countSubStr(str1, str2, 1);
@@ -178,9 +189,6 @@ int main() {
     freeString(str1);
     freeString(str2);
     printTestResult(passed);
-
-
-    return 0;
 }
 
 void testCompareString() {
@@ -189,13 +197,20 @@ void testCompareString() {
     MyStringP s3 = createStringFromChars("hallo ");
     MyStringP s4 = createStringFromChars("Hallo ");
     MyStringP s5 = createStringFromChars("hello world");
+    MyStringP s6 = createStringFromChars("aba");
+    MyStringP s7 = createStringFromChars("aaa");
+    MyStringP s8 = createStringFromChars("aaaz");
+    MyStringP s9 = createStringFromChars("aab");
 
     int eq1 = cmpString(s1, s2);
     int eq2 = cmpString(s2, s3);
     int eq3 = cmpString(s3, s4);
     int eq4 = cmpString(s1, s5);
+    int eq5 = cmpString(s6, s7);
+    int eq6 = cmpString(s8, s9);
 
-    int passed = ((eq1 == -1) && (eq2 == -1) && (eq3 == 1) && (eq4 == 1)) ? 1 : 0;
+    int passed = ((eq1 == 1) && (eq2 == 1) && (eq3 == 1) && (eq4 == 1) && (eq5 == 1) && (eq6 ==
+            -1)) ? 1 : 0;
     printTestResult(passed);
 
     freeString(s5);
